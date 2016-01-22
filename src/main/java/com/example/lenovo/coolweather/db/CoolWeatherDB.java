@@ -36,7 +36,7 @@ public class CoolWeatherDB {
             ContentValues contentValues=new ContentValues();
             contentValues.put("province_name",province.getProvinceName());
             contentValues.put("province_code",province.getProvinceCode());
-            db.insert(DB_NAME,null,contentValues);
+            db.insert("Province",null,contentValues);
         }
     }
     //从数据库读取所有省份
@@ -78,9 +78,9 @@ public class CoolWeatherDB {
                 city.setCityName(cursor.getString(cursor.getColumnIndex("city_name")));
                 city.setCityCode(cursor.getString(cursor.getColumnIndex("city_code")));
 
-                //两句达到的结果相同?
+                //两句达到的结果相同? 是的
                 city.setProvinceId(cursor.getInt(cursor.getColumnIndex("province_id")));
-                city.setProvinceId(provinceId);
+//                city.setProvinceId(provinceId);
                 list.add(city);
             }while (cursor.moveToNext());
         }
@@ -99,7 +99,7 @@ public class CoolWeatherDB {
             db.insert("County", null, contentValues);
         }
     }
-    public List<County> loadCouties(int cityId){
+    public List<County> loadCounties(int cityId){
         List<County> list=new ArrayList<County>();
         Cursor cursor=db.query("County",null,"city_id=?",new String[]{String.valueOf(cityId)},null,null,null);
         if(cursor.moveToFirst()){
@@ -109,6 +109,7 @@ public class CoolWeatherDB {
                 county.setCountyName(cursor.getString(cursor.getColumnIndex("county_name")));
                 county.setCountyCode(cursor.getString(cursor.getColumnIndex("county_code")));
                 county.setCityId(cityId);
+                list.add(county);
             }while (cursor.moveToNext());
         }
         if(cursor!=null){
