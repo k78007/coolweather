@@ -51,13 +51,14 @@ public class ChooseAreaActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
-        boolean cityIsSelected=sharedPreferences.getBoolean("cityIsSelected",false);
-        if(cityIsSelected){
+        boolean cityIsSelected=sharedPreferences.getBoolean("cityIsSelected", false);
+        boolean isFromWeatherActivity=getIntent().getBooleanExtra("isFromWeatherActivity",false);
+        if(cityIsSelected&&!isFromWeatherActivity){
             Intent intent=new Intent(this,WeatherActivity.class);
             startActivity(intent);
             finish();
-            //不加return??
-//            return;
+            //不加return?? 可以
+            return;
         }
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.choose_area);
@@ -217,7 +218,12 @@ public class ChooseAreaActivity extends Activity {
         }
         else if(currentLevel==LEVEL_COUNTY){
             queryCities();
-        }else {
+        }else if(getIntent().getBooleanExtra("isFromWeatherActivity",false)){
+            Intent intent=new Intent(ChooseAreaActivity.this,WeatherActivity.class);
+            startActivity(intent);
+            finish();
+        }
+        else {
             finish();
         }
     }
