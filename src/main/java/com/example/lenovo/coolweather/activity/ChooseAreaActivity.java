@@ -53,6 +53,7 @@ public class ChooseAreaActivity extends Activity {
         SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
         boolean cityIsSelected=sharedPreferences.getBoolean("cityIsSelected", false);
         boolean isFromWeatherActivity=getIntent().getBooleanExtra("isFromWeatherActivity",false);
+        //如果市县被选定，且当前活动不是由天气信息活动启动的，则直接启动天气信息活动显示上次选定的市县天气。
         if(cityIsSelected&&!isFromWeatherActivity){
             Intent intent=new Intent(this,WeatherActivity.class);
             startActivity(intent);
@@ -88,7 +89,7 @@ public class ChooseAreaActivity extends Activity {
         queryProvinces();
 
     }
-    //优先从数据库查询，无数据再从服务器查询。
+    //优先从数据库查询省数据，无数据再从服务器查询。
     private void queryProvinces() {
         provinceList=coolWeatherDB.loadProvinces();
         if(provinceList.size()>0){
@@ -105,7 +106,7 @@ public class ChooseAreaActivity extends Activity {
             queryListViewContentFromServer(null,"province");
         }
     }
-
+    //优先从数据库查询市数据，无数据再从服务器查询。
     private void queryCities() {
         cityList=coolWeatherDB.loadCities(selectedProvince.getId());
         if(cityList.size()>0){
@@ -122,7 +123,7 @@ public class ChooseAreaActivity extends Activity {
             queryListViewContentFromServer(selectedProvince.getProvinceCode(),"city");
         }
     }
-
+    //优先从数据库查询县数据，无数据再从服务器查询。
     private void queryCounties() {
         countyList=coolWeatherDB.loadCounties(selectedCity.getId());
         if(countyList.size()>0){
@@ -195,6 +196,7 @@ public class ChooseAreaActivity extends Activity {
             }
         });
     }
+    //显示ProgressDialog控件
     private void showProgressDialog(){
         if(progressDialog==null){
             progressDialog=new ProgressDialog(this);
@@ -204,13 +206,14 @@ public class ChooseAreaActivity extends Activity {
         progressDialog.show();
 
     }
+    //关闭ProgressDialog控件
     private void closeProgressDialog(){
         if(progressDialog!=null){
             progressDialog.dismiss();
         }
 
     }
-
+    //重写返回按钮
     @Override
     public void onBackPressed() {
         if(currentLevel==LEVEL_CITY){

@@ -11,8 +11,10 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.lenovo.coolweather.R;
+import com.example.lenovo.coolweather.service.AutoUpdateService;
 import com.example.lenovo.coolweather.util.HttpCallBackInterface;
 import com.example.lenovo.coolweather.util.HttpUtil;
 import com.example.lenovo.coolweather.util.Utility;
@@ -40,10 +42,16 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
         weatherDescriptionText=(TextView)findViewById(R.id.weather_description);
         temp1Text=(TextView)findViewById(R.id.temp1);
         temp2Text=(TextView)findViewById(R.id.temp2);
+        //为四个角的四个按钮注册监听。
         Button switch_city=(Button)findViewById(R.id.switch_city);
         switch_city.setOnClickListener(this);
         Button refresh=(Button)findViewById(R.id.refresh);
         refresh.setOnClickListener(this);
+        Button open_service=(Button)findViewById(R.id.open_service);
+        open_service.setOnClickListener(this);
+        Button stop_service=(Button)findViewById(R.id.stop_service);
+        stop_service.setOnClickListener(this);
+        //从选择区域的活动中得到县的代码
         String countyCode=getIntent().getStringExtra("county_code");
         if(!TextUtils.isEmpty(countyCode)){
             publishText.setText("正在同步...");
@@ -55,14 +63,17 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
         }
 
     }
+    //通过县代码查询天气代码
     private void queryWeatherCode(String countyCode){
         String address="http://www.weather.com.cn/data/list3/city"+countyCode+".xml";
         queryWeatherFromServer(address,"countyCode");
     }
+    //通过天气代码查询天气数据
     private void queryWeatherInfo(String weatherCode){
         String address="http://www.weather.com.cn/data/cityinfo/"+weatherCode+".html";
         queryWeatherFromServer(address, "weatherCode");
     }
+    //从服务器查找数据
     private void queryWeatherFromServer(String adress, final String type){
         HttpUtil.sendHttpRequest(adress, new HttpCallBackInterface() {
             @Override
@@ -98,6 +109,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
             }
         });
     }
+    //从SharedPreferences中得到数据并显示出来。
     private void showWeather(){
         SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(this);
         String cityName=sharedPreferences.getString("cityName", "");
@@ -111,7 +123,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
         temp2Text.setText(temp2);
         weatherDateText.setText(weatherDate);
         weatherDescriptionText.setText(weatherDecription);
-        publishText.setText("今天"+publishTime+"发布");
+        publishText.setText("今天" + publishTime + "发布");
         weatherInfoLayout.setVisibility(View.VISIBLE);
         cityNameText.setVisibility(View.VISIBLE);
     }
@@ -134,6 +146,18 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
                 if(!TextUtils.isEmpty(weatherCode)){
                     queryWeatherInfo(weatherCode);
                 }
+                break;
+            }
+            case R.id.open_service:{
+                Intent intent=new Intent(WeatherActivity.this, AutoUpdateService.class);
+                startService(intent);
+                Toast.makeText(this,"自动更新开启",Toast.LENGTH_SHORT).show();
+                break;
+            }
+            case R.id.stop_service:{
+                Intent intent=new Intent(WeatherActivity.this, AutoUpdateService.class);
+                stopService(intent);
+                Toast.makeText(this,"自动更新关闭",Toast.LENGTH_SHORT).show();
                 break;
             }
             default:

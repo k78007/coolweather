@@ -96,5 +96,25 @@
                     android:layout_gravity="center_vertical"/>
             </LinearLayout>
         </LinearLayout>
+        <Button
+            android:id="@+id/open_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="5dp"
+            android:textSize="20sp"
+            android:text="开启自动更新"
+            android:textColor="#eee"/>
+        <Button
+            android:id="@+id/stop_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="5dp"
+            android:textSize="20sp"
+            android:text="关闭后台更新"
+            android:textColor="#eee"/>
     </RelativeLayout>
 </LinearLayout>
