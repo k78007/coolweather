@@ -141,7 +141,7 @@ public class ChooseAreaActivity extends Activity {
         }
 
     }
-    //从服务器查询数据。
+    //从服务器查询数据。此处使用的中国气象网的API仅用于显示城市列表和查询城市的ID
     private void queryListViewContentFromServer(final String code, final String type){
         String address;
         if(!TextUtils.isEmpty(code)){

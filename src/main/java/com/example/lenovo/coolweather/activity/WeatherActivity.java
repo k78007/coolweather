@@ -30,6 +30,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
     private TextView weatherDescriptionText;
     private TextView temp1Text;
     private TextView temp2Text;
+    private TextView currentTempText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +43,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
         weatherDescriptionText=(TextView)findViewById(R.id.weather_description);
         temp1Text=(TextView)findViewById(R.id.temp1);
         temp2Text=(TextView)findViewById(R.id.temp2);
+        currentTempText=(TextView)findViewById(R.id.current_temp);
         //为四个角的四个按钮注册监听。
         Button switch_city=(Button)findViewById(R.id.switch_city);
         switch_city.setOnClickListener(this);
@@ -57,6 +59,7 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
             publishText.setText("正在同步...");
             weatherInfoLayout.setVisibility(View.INVISIBLE);
             cityNameText.setVisibility(View.INVISIBLE);
+            currentTempText.setVisibility(View.INVISIBLE);
             queryWeatherCode(countyCode);
         }else {
             showWeather();
@@ -68,9 +71,14 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
         String address="http://www.weather.com.cn/data/list3/city"+countyCode+".xml";
         queryWeatherFromServer(address,"countyCode");
     }
-    //通过天气代码查询天气数据
-    private void queryWeatherInfo(String weatherCode){
+    //通过天气代码查询天气数据(中国气象网API，已过时，无法更新)
+    private void queryWeatherInfoOld(String weatherCode){
         String address="http://www.weather.com.cn/data/cityinfo/"+weatherCode+".html";
+        queryWeatherFromServer(address, "weatherCode");
+    }
+    //通过天气代码查询天气数据（百度apistore）
+    private void queryWeatherInfo(String weatherCode){
+        String address=" http://apis.baidu.com/apistore/weatherservice/recentweathers?cityid="+weatherCode;
         queryWeatherFromServer(address, "weatherCode");
     }
     //从服务器查找数据
@@ -118,14 +126,17 @@ public class WeatherActivity extends Activity implements View.OnClickListener{
         String weatherDecription=sharedPreferences.getString("weatherDecription","");
         String publishTime=sharedPreferences.getString("publishTime","");
         String weatherDate=sharedPreferences.getString("weatherDate","");
+        String currentTemp=sharedPreferences.getString("currentTemp","");
         cityNameText.setText(cityName);
         temp1Text.setText(temp1);
         temp2Text.setText(temp2);
         weatherDateText.setText(weatherDate);
         weatherDescriptionText.setText(weatherDecription);
         publishText.setText("今天" + publishTime + "发布");
+        currentTempText.setText("实时气温："+currentTemp);
         weatherInfoLayout.setVisibility(View.VISIBLE);
         cityNameText.setVisibility(View.VISIBLE);
+        currentTempText.setVisibility(View.VISIBLE);
     }
 
     @Override
